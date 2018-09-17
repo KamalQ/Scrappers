@@ -1,8 +1,10 @@
+import pandas as pd
+import datetime, time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
-import pandas as pd
 
+#todo figure out how to inital a class in python and add this into the init
 pd.set_option('max_rows', 100)
 pd.set_option('max_columns', 10)
 options = Options()
@@ -18,10 +20,10 @@ driver = webdriver.Chrome(chrome_options=options, executable_path=chromedriver)
 class fetch_coinMarketCal():
 
     def upcoming_event(self):
-
         driver.get("https://coinmarketcal.com")
         page_count = 1
         list_entries = []
+        time_stamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
 
         while True:
             page_count += 1
@@ -32,14 +34,14 @@ class fetch_coinMarketCal():
                 additional_info = entry.find_element_by_xpath('.//div/p[@class="card__description"]').text
                 list_entries.append({'name': coin_name, 'date': date, 'event_name': event_name, 'additional_info': additional_info})
             try:
+                print(time_stamp, 'Finished scraping data from page #', (page_count-1))
                 element = driver.find_element_by_class_name("pagination")
                 driver.execute_script("arguments[0].scrollIntoView();", element)
                 driver.find_element_by_link_text(str(page_count)).click()
             except NoSuchElementException:
                 break
             except Exception as Ex:
-                #todo add timestamp
-                print('Error occurred : ', Ex)
+                print(time_stamp, '--- Error occurred : ', Ex)
 
         df_entries = pd.DataFrame.from_dict(list_entries)
         print(df_entries)
