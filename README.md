@@ -7,3 +7,5 @@ Requirements
 - Chrome Web Driver
 - Selenium
 - Pandas
+- Pymongo
+- MongoDB

@@ -1,5 +1,7 @@
 import pandas as pd
 import datetime as dt, time
+import pymongo
+import json
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
@@ -19,6 +21,23 @@ class fetch_coinMarketCal:
         self.options.add_argument("--disable-extensions")
         self.chromedriver = "/usr/local/bin/chromedriver"
         self.driver = webdriver.Chrome(chrome_options=self.options, executable_path=self.chromedriver)
+        self.client = pymongo.MongoClient('localhost', 27017)
+        self.database = self.client['CoinMarketCal']
+
+    def save_to_database(self, dataframe):
+        collection = self.database['CoinMarketCal_events']
+        dataframe.reset_index(inplace=True)
+        data_frame_json = json.loads(dataframe.T.to_json()).values()
+
+        starttime = dt.datetime.now()
+        print('Saving data to database...')
+        for entry in data_frame_json:
+            link = entry['link']
+            collection.update({'link': link}, entry, upsert=True)
+
+        endtime = dt.datetime.now()
+        print('Total elapsed time:', endtime - starttime, '\nDone.')
+        return
 
     def events(self, event_link, file_name):
         self.driver.get(event_link)
@@ -49,6 +68,7 @@ class fetch_coinMarketCal:
 
         df_entries = pd.DataFrame.from_dict(list_entries)
         print(df_entries)
+        fetch_coinMarketCal.save_to_database(self,df_entries)
         df_entries.to_csv(file_name)
         self.driver.quit()
 
@@ -56,4 +76,4 @@ class fetch_coinMarketCal:
 if __name__ == '__main__':
     scrapper = fetch_coinMarketCal()
     scrapper.events('https://coinmarketcal.com', 'CoinMarketCal_Scrapped_Data.csv')
-    scrapper.events('https://coinmarketcal.com/pastevent', 'CoinMarketCal_Past_Scrapped_Data.csv')
+    scrapper.events('https://coinmarketcal.com/pastevents', 'CoinMarketCal_Past_Scrapped_Data.csv')
