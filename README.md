@@ -2,6 +2,7 @@
 Various scrapers for different sites
 
 - Scrapes events from https://coinmarketcal.com
+- Scrapes Market Prices from https://ca.investing.com/crypto/ 
 
 Requirements
 - Chrome Web Driver
