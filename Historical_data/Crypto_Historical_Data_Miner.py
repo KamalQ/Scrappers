@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import datetime as dt, time
 import pymongo
 import json
@@ -23,12 +24,17 @@ class fetch_crypto_hist_data:
         self.driver = webdriver.Chrome(chrome_options=self.options, executable_path=self.chromedriver)
 
     def fetch_symbol_name(self,symbol):
-        name = symbol
-        return name
+        read_dictionary = np.load('../CoinMarketCap/List_of_crypto_symbols.npy').item()
+        symbol_name = read_dictionary[symbol]
+        return symbol_name
 
-    def schedule(self, symbol):
+    def get_to_page(self, symbol):
         symbol_name = fetch_crypto_hist_data.fetch_symbol_name(self,symbol)
-        self.driver.get('https://ca.investing.com/crypto/{}/{}-btc-historical-data'.format(symbol_name,symbol))
+        symbol = symbol.lower()
+        symbol_name = symbol_name.lower()
+        self.driver.get('https://ca.investing.com/crypto/{}/{}-btc-historical-data'.format(symbol_name, symbol))
+        #todo- clear startdate before inputinng it
+        start_date = '01/01/2016'
         # self.driver.find_elements_by_id('p_chan_links_lnk')[10].click()
         # self.driver.find_element_by_partial_link_text('Look-up Classes to Add').click()
         # self.driver.quit()
@@ -36,4 +42,4 @@ class fetch_crypto_hist_data:
 
 if __name__ == '__main__':
     scrapper = fetch_crypto_hist_data()
-    scrapper.schedule('xrp')
+    scrapper.get_to_page('TRX')

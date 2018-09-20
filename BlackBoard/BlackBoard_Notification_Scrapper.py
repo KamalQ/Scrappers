@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
+# Opens Chrome and takes you to notifications page(logs in for you)
 
 class fetch_BlackBoard:
 

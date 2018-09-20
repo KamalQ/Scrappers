@@ -3,6 +3,7 @@ import re
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
+# Opens Chrome and takes you to MyCampus portal(logs in for you)
 
 class fetch_BlackBoard:
 
