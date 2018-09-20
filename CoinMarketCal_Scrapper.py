@@ -6,6 +6,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 
+#Todo try to fetch event type, date event was added/posted, votes and percent- for event type i should create my own cross refence from list and match,
+# sort from master list of event types based on all collected data input/names
+#Date Data was collected Sept 17, 2018
 
 class fetch_coinMarketCal:
 
@@ -13,7 +16,7 @@ class fetch_coinMarketCal:
         pd.set_option('max_rows', 100)
         pd.set_option('max_columns', 10)
         self.options = Options()
-        # options.add_argument("--headless")
+        self.options.add_argument("--headless")
         self.options.add_argument('--no-sandbox')
         self.options.add_argument('--disable-gpu')
         self.options.add_argument('start-maximized')
@@ -25,18 +28,19 @@ class fetch_coinMarketCal:
         self.database = self.client['CoinMarketCal']
 
     def save_to_database(self, dataframe):
+        time_stamp = dt.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d %H:%M:%S')
         collection = self.database['CoinMarketCal_events']
         dataframe.reset_index(inplace=True)
         data_frame_json = json.loads(dataframe.T.to_json()).values()
 
         starttime = dt.datetime.now()
-        print('Saving data to database...')
+        print(time_stamp, 'Saving data to database...')
         for entry in data_frame_json:
             link = entry['link']
             collection.update({'link': link}, entry, upsert=True)
 
         endtime = dt.datetime.now()
-        print('Total elapsed time:', endtime - starttime, '\nDone.')
+        print(time_stamp, 'Total elapsed time:', endtime - starttime)
         return
 
     def events(self, event_link, file_name):

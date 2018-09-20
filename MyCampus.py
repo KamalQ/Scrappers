@@ -31,19 +31,20 @@ class fetch_BlackBoard:
         password = credentials[1]
         username = re.findall('"([^"]*)"', username)
         password = re.findall('"([^"]*)"', password)
-        self.driver.get('https://uoit.blackboard.com/')
+        self.driver.get('https://uoit.ca/mycampus/')
         self.driver.find_element_by_id('username').send_keys(username)
         self.driver.find_element_by_id('password').send_keys(password)
         self.driver.find_element_by_class_name('btn-submit').click()
 
-    def notifications(self):
+    def schedule(self):
         fetch_BlackBoard.login(self)
-        self.driver.find_element_by_id('global-nav-link').click()
-        WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'AlertsOnMyBb_____AlertsTool')))
-        self.driver.find_element_by_id('AlertsOnMyBb_____AlertsTool').click()
-        self.driver.quit()
+        # self.driver.find_element_by_id('global-nav-link').click()
+        # WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.ID, 'AlertsOnMyBb_____AlertsTool')))
+        # self.driver.find_element_by_id('AlertsOnMyBb_____AlertsTool').click()
+        # self.driver.quit()
 
 
 if __name__ == '__main__':
     scrapper = fetch_BlackBoard()
-    scrapper.notifications()
+    scrapper.schedule()
+
