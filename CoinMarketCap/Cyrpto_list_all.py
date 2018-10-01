@@ -4,6 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 
+#exmple change for POC
+
 # This code fetches a complete list off all coins listed on https://coinmarketcap.com/coins/views/all/
 # Saves a Dictionary with Symbol and Symbol name
 
